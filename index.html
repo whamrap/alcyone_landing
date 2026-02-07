@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcyone Analytics | Private Portfolio Management</title>
+    <meta name="description"
+        content="Advanced portfolio aggregation and algorithmic analysis for private wealth management. Built with Next.js and Python.">
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --primary: #38bdf8;
+            --secondary: #10b981;
+            --accent: #fbbf24;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 25%);
+        }
+
+        /* Animated Background */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            filter: blur(80px);
+            background:
+                radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.15), transparent 40%);
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            border-radius: 50%;
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-2 {
+            top: 40%;
+            right: 10%;
+            background: linear-gradient(135deg, var(--secondary), #34d399);
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+
+        @keyframes move {
+            from {
+                transform: translate(-10%, -10%) rotate(0deg);
+            }
+
+            to {
+                transform: translate(10%, 10%) rotate(360deg);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Hero Section */
+        header {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 0.5rem 1.25rem;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        h1 .gradient {
+            background: linear-gradient(to bottom right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* About Section */
+        .about-text {
+            padding: 8rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-text p {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            font-weight: 300;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem 8rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 1rem;
+        }
+
+        /* Tech Section */
+        .tech-stack {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tech-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+        }
+
+        .tech-icons {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            opacity: 0.6;
+            filter: grayscale(1);
+            transition: all 0.3s ease;
+        }
+
+        .tech-icons:hover {
+            opacity: 1;
+            filter: grayscale(0);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8));
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .contact-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .email-link {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <div class="logo">
+            <i data-lucide="layers"></i>
+            Alcyone
+        </div>
+        <div class="nav-links">
+            <a href="mailto:alcyoneanalytics@gmail.com" class="btn btn-outline"
+                style="padding: 0.5rem 1.25rem;">Support</a>
+        </div>
+    </nav>
+
+    <header>
+        <div class="badge" data-aos="fade-down">Now in Private Beta</div>
+        <h1 data-aos="fade-up">
+            <span class="gradient">Intelligent Wealth</span><br>
+            <span style="color: var(--primary)">Orchestration.</span>
+        </h1>
+        <p class="tagline" data-aos="fade-up" data-aos-delay="100">
+            Alcyone Analytics provides advanced multi-broker aggregation and algorithmic strategy insights for the
+            modern investor.
+        </p>
+        <div class="cta-group" data-aos="fade-up" data-aos-delay="200">
+            <a href="mailto:alcyoneanalytics@gmail.com?subject=Beta Access Request" class="btn btn-primary">
+                Request Access
+                <i data-lucide="arrow-right"></i>
+            </a>
+            <a href="#about" class="btn btn-outline">Learn More</a>
+        </div>
+    </header>
+
+    <section class="about-text" id="about" data-aos="fade-up">
+        <p>
+            Alcyone Analytics is a private financial dashboard designed for multi-broker data aggregation and
+            algorithmic
+            strategy analysis. Built for sophisticated personal investors, it provides a unified interface for tracking
+            automated trading workflows and real-time performance metrics.
+        </p>
+    </section>
+
+    <section class="features">
+        <div class="card" data-aos="fade-up" data-aos-delay="0">
+            <div class="icon-box"><i data-lucide="database"></i></div>
+            <h3>Unified Aggregation</h3>
+            <p>Seamlessly connect multi-broker data into a single, high-fidelity dashboard for real-time monitoring.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box"><i data-lucide="cpu"></i></div>
+            <h3>Algorithmic Analysis</h3>
+            <p>Deep-dive into performance metrics with proprietary algorithmic strategy diagnostics.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box"><i data-lucide="shield-check"></i></div>
+            <h3>Private & Secure</h3>
+            <p>Built with enterprise-grade security and data privacy at its core, ensuring your portfolio stays yours.
+            </p>
+        </div>
+    </section>
+
+    <section class="tech-stack">
+        <div class="tech-label">Powered by Performance</div>
+        <div class="tech-icons">
+            <span style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1.2rem;">
+                <i data-lucide="zap"></i> Next.js
+            </span>
+            <span style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 1.2rem;">
+                <i data-lucide="code-2"></i> Python
+            </span>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <div class="contact-card" data-aos="zoom-in">
+            <h2>Get in Touch</h2>
+            <p style="color: var(--text-dim); margin-bottom: 2rem;">For technical inquiries or data privacy information,
+                our team is ready to assist.</p>
+            <a href="mailto:alcyoneanalytics@gmail.com" class="email-link">alcyoneanalytics@gmail.com</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Alcyone Analytics. Private Internal Tool. Not open for public registration.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Mouse Glow Effect
+        const mesh = document.querySelector('.mesh-bg');
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            mesh.style.setProperty('--mouse-x', `${x * 100}%`);
+            mesh.style.setProperty('--mouse-y', `${y * 100}%`);
+        });
+
+        // Scroll Progress Bar
+        const progress = document.createElement('div');
+        progress.style.cssText = 'position:fixed; top:0; left:0; height:3px; background:var(--primary); z-index:999; transition: width 0.1s;';
+        document.body.appendChild(progress);
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progress.style.width = scrolled + "%";
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>
