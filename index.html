@@ -352,6 +352,28 @@
             border-top: 1px solid var(--glass-border);
         }
 
+        .legal-section {
+            padding: 2rem 2rem 4rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .legal-section h4 {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .legal-item {
+            margin-bottom: 1.5rem;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 3rem;
@@ -457,6 +479,24 @@
     <footer>
         <p>&copy; 2026 Alcyone Analytics. Private Internal Tool. Not open for public registration.</p>
     </footer>
+
+    <section id="legal" class="legal-section">
+        <div class="legal-item">
+            <h4 id="privacy">Privacy Policy</h4>
+            <p>
+                Alcyone Analytics is a local-first application. User data, API tokens, and portfolio details are
+                processed exclusively in the user’s local runtime environment and are never transmitted to or stored on
+                external servers.
+            </p>
+        </div>
+        <div class="legal-item">
+            <h4 id="terms">Terms of Service</h4>
+            <p>
+                This application is provided as a private beta tool for authorized users only. The software is provided
+                "as is", without warranty of any kind.
+            </p>
+        </div>
+    </section>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
